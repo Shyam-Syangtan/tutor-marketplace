@@ -56,16 +56,31 @@ export default async function AuthGuard({
     }
 
     if (!profile) {
-      // No row in `public.profiles` yet → maybe just signed up.
-      redirect('/auth/login') // fallback: treat as not authorized
+      // No row in `public.profiles` yet → create a default profile.
+      const { error: insertError } = await supabase
+        .from('profiles')
+        .insert({
+          id: session.user.id,
+          role: 'student', // Default role
+        })
+
+      if (insertError) {
+        console.error('AuthGuard: error creating profile', insertError)
+        redirect('/auth/login') // fallback: treat as not authorized
+      }
+
+      console.log('AuthGuard: default profile created')
+    } else {
+      console.log("Profile data:", profile);
+
+      if (profile.role !== role) {
+        // User is signed in but with the wrong role → send them away.
+        redirect('/forbidden')
+      }
     }
 
-    console.log("Profile data:", profile);
-
-    if (profile.role !== role) {
-      // User is signed in but with the wrong role → send them away.
-      redirect('/forbidden')
-    }
+    console.log('AuthGuard: session data', session);
+    console.log('AuthGuard: profile data', profile);
   }
 
   /* ------------------------------------------------------------------

@@ -14,39 +14,42 @@ export interface Database {
       profiles: {
         Row: {
           id: string
+          full_name: string | null
+          avatar_url: string | null
           role: 'student' | 'tutor'
-          // add other columns you have in the profiles table
+          created_at: string
         }
         Insert: {
-          id?: string
-          role: 'student' | 'tutor'
-          // same fields as Row, but optional when inserting
+          id: string
+          full_name?: string
+          avatar_url?: string
+          role?: 'student' | 'tutor'
+          // created_at is set by the database
         }
         Update: {
-          id?: string
+          full_name?: string
+          avatar_url?: string
           role?: 'student' | 'tutor'
-          // all fields optional when updating
         }
       }
-      listings: {
+      lessons: {
         Row: {
           id: number
-          tutor_id: string
-          title: string
-          price: number
-          // add other columns of your listings table
+          student_id: string
+          tutor_name: string
+          scheduled_at: string
+          created_at: string
         }
         Insert: {
-          tutor_id: string
-          title: string
-          price: number
-          // omit id if it's auto-generated
+          student_id: string
+          tutor_name: string
+          scheduled_at: string
+          // created_at is set by the database
         }
         Update: {
-          tutor_id?: string
-          title?: string
-          price?: number
-          // all optional
+          student_id?: string
+          tutor_name?: string
+          scheduled_at?: string
         }
       }
       // add additional table definitions here
@@ -54,7 +57,6 @@ export interface Database {
     Views: Record<string, unknown>
     Functions: Record<string, unknown>
     Enums: Record<string, unknown>
-
     // add other schema elements (RPC, etc.) if needed
   }
 }

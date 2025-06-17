@@ -1,8 +1,6 @@
-// src/app/components/AuthGuard.tsx
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { Database } from '@/lib/database.types'  // your Supabase schema types
 
 export default async function AuthGuard({
   children,
@@ -11,7 +9,8 @@ export default async function AuthGuard({
   children: React.ReactNode
   role?: 'student' | 'tutor'
 }) {
-  const supabase = createServerComponentClient<Database>({
+  // Initialize Supabase client (no explicit Database type)
+  const supabase = createServerComponentClient({
     cookies,
   })
 

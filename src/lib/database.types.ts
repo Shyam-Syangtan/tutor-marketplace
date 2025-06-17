@@ -51,9 +51,10 @@ export interface Database {
       }
       // add additional table definitions here
     }
-    Views: {}
-    Functions: {}
-    Enums: {}
+    Views: Record<string, unknown>
+    Functions: Record<string, unknown>
+    Enums: Record<string, unknown>
+
     // add other schema elements (RPC, etc.) if needed
   }
 }

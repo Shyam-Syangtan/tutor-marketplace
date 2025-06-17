@@ -35,13 +35,19 @@ export default function HomePage() {
       <section className="px-6 lg:px-24 py-12">
         <div className="bg-white rounded-xl shadow p-6 flex overflow-x-auto space-x-4">
           {[
-            { name: 'English',  count: 5003, flag: '/flags/uk.svg' },
-            { name: 'Japanese', count:  988, flag: '/flags/jp.svg' },
-            { name: 'Spanish',  count: 2595, flag: '/flags/es.svg' },
+            { name: 'English', count: 5003, flag: '/flags/uk.svg' },
+            { name: 'Japanese', count: 988, flag: '/flags/jp.svg' },
+            { name: 'Spanish', count: 2595, flag: '/flags/es.svg' },
             // add more as needed
           ].map(({ flag, name, count }, i) => (
             <div key={i} className="flex-shrink-0 w-32 text-center space-y-2">
-              <img src={flag} alt={name} className="mx-auto w-8 h-8" />
+              <Image
+                src={flag}
+                alt={name}
+                width={32}
+                height={32}
+                className="mx-auto"
+              />
               <p className="font-medium">{name}</p>
               <p className="text-sm text-gray-500">{count} Teachers</p>
             </div>
@@ -55,8 +61,8 @@ export default function HomePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
             { title: 'Flexible Scheduling', desc: 'Book lessons 24/7 to fit your timetable.' },
-            { title: 'Certified Tutors',     desc: 'All our tutors are certified professionals.' },
-            { title: 'Community Support',    desc: 'Practice in group classes and forums.' },
+            { title: 'Certified Tutors', desc: 'All our tutors are certified professionals.' },
+            { title: 'Community Support', desc: 'Practice in group classes and forums.' },
           ].map((feat, idx) => (
             <div key={idx} className="p-6 bg-white rounded-lg shadow">
               <h3 className="text-xl font-semibold mb-2">{feat.title}</h3>

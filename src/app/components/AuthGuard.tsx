@@ -1,90 +1,31 @@
-// src/app/components/AuthGuard.tsx
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { Database } from '@/lib/database.types'  // 🛈 your generated types
+import type { Database } from '@/lib/database.types'
 
-/**
- * Usage:
- *   <AuthGuard role="student">{ protected content }</AuthGuard>
- *
- * If `role` is omitted, it merely checks that you are signed in.
- */
 export default async function AuthGuard({
   children,
-  role, // 'student' | 'tutor' | undefined
+  role,
 }: {
   children: React.ReactNode
   role?: 'student' | 'tutor'
 }) {
-  /* ------------------------------------------------------------------
-     1) Init server-side Supabase client (type-safe).
-  ------------------------------------------------------------------ */
   const supabase = createServerComponentClient<Database>({ cookies })
-
-  /* ------------------------------------------------------------------
-     2) Check if there is a signed-in user.
-  ------------------------------------------------------------------ */
   const {
     data: { session },
-    error: sessionError,
   } = await supabase.auth.getSession()
 
-  if (sessionError) {
-    console.error('AuthGuard: getSession error', sessionError)
-  }
+  if (!session) redirect('/auth/login')
 
-  if (!session) {
-    // Nobody logged in → send to login
-    redirect('/auth/login')
-  }
-
-  console.log("Session:", session);
-
-  /* ------------------------------------------------------------------
-     3) Optional role enforcement.
-  ------------------------------------------------------------------ */
   if (role) {
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase
       .from('profiles')
       .select('role')
       .eq('id', session.user.id)
       .single()
 
-    if (profileError) {
-      console.error('AuthGuard: error fetching profile', profileError)
-    }
-
-    if (!profile) {
-      // No row in `public.profiles` yet → create a default profile.
-      const { error: insertError } = await supabase
-        .from('profiles')
-        .insert({
-          id: session.user.id,
-          role: 'student', // Default role
-        })
-
-      if (insertError) {
-        console.error('AuthGuard: error creating profile', insertError)
-        redirect('/auth/login') // fallback: treat as not authorized
-      }
-
-      console.log('AuthGuard: default profile created')
-    } else {
-      console.log("Profile data:", profile);
-
-      if (profile.role !== role) {
-        // User is signed in but with the wrong role → send them away.
-        redirect('/forbidden')
-      }
-    }
-
-    console.log('AuthGuard: session data', session);
-    console.log('AuthGuard: profile data', profile);
+    if (!profile || profile.role !== role) redirect('/')
   }
 
-  /* ------------------------------------------------------------------
-     4) All checks passed → render the protected content.
-  ------------------------------------------------------------------ */
   return <>{children}</>
 }

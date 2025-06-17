@@ -19,8 +19,7 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false)
 
   /* ------------------------------------------------------------------
-     If the user is already logged in, immediately send them
-     to the student dashboard so they don’t see the signup page again.
+     If already signed in, skip signup screen
   ------------------------------------------------------------------ */
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -34,11 +33,8 @@ export default function SignUpPage() {
     setLoading(true)
     setErrorMsg(null)
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      // You could pass user_metadata here, e.g. full_name
-    })
+    // We only need `error`, so we don't destructure `data`
+    const { error } = await supabase.auth.signUp({ email, password })
 
     setLoading(false)
 
@@ -47,10 +43,7 @@ export default function SignUpPage() {
       return
     }
 
-    // Sign-up succeeded 👌
-    // For email/password, Supabase usually returns an immediate session.
-    // If you have email confirmations ON, you might want to show a
-    // "Check your inbox" page instead.
+    // Success → go straight to dashboard
     router.push('/student-dashboard')
   }
 
@@ -60,15 +53,12 @@ export default function SignUpPage() {
       <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-center">Create an Account</h1>
 
-        {/* ------------------------------------------------------------ */}
-        {/* Google signup option (optional)                             */}
-        {/* ------------------------------------------------------------ */}
+        {/* Google signup */}
         <button
           onClick={() =>
             supabase.auth.signInWithOAuth({
               provider: 'google',
               options: {
-                // Send user to /student-dashboard after Google consent
                 redirectTo: `${window.location.origin}/student-dashboard`,
               },
             })
@@ -86,7 +76,7 @@ export default function SignUpPage() {
           <hr className="flex-grow border-gray-300" />
         </div>
 
-        {/* ------------------- email/password form ------------------- */}
+        {/* Email/password form */}
         <form onSubmit={handleSignUp} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -98,8 +88,7 @@ export default function SignUpPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2
-                         focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 
@@ -113,8 +102,7 @@ export default function SignUpPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2
-                         focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 
@@ -129,7 +117,6 @@ export default function SignUpPage() {
           </button>
         </form>
 
-        {/* Link to login */}
         <p className="mt-4 text-center text-sm">
           Already have an account?{' '}
           <a href="/auth/login" className="text-red-500 hover:underline">

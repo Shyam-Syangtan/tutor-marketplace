@@ -22,7 +22,11 @@ export default function SignUpPage() {
      If already signed in, skip signup screen
   ------------------------------------------------------------------ */
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error('Signup: getSession error', error)
+      }
+      console.log('Signup: session data', session)
       if (session) router.replace('/student-dashboard')
     })
   }, [router])

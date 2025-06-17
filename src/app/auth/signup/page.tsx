@@ -2,10 +2,6 @@
 // src/app/auth/signup/page.tsx
 'use client'
 
-// src/app/auth/signup/page.tsx
-'use client'
-
-// Removed stray normalize import
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'

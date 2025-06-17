@@ -37,13 +37,13 @@ export default function LoginModal({
         onClick={() =>
           supabase.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: `${window.location.origin}/student-dashboard` },
+            options: {
+              redirectTo: `${window.location.origin}/student-dashboard`,
+            },
           })
         }
-        className="w-full mb-4 flex items-center justify-center gap-2 py-2
-                   border rounded hover:bg-gray-50"
+        className="text-sm text-gray-700 hover:underline"
       >
-        <Image src="/icons/google.svg" alt="Google" width={20} height={20} />
         Continue with Google
       </button>
 

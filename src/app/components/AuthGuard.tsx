@@ -39,6 +39,8 @@ export default async function AuthGuard({
     redirect('/auth/login')
   }
 
+  console.log("Session:", session);
+
   /* ------------------------------------------------------------------
      3) Optional role enforcement.
   ------------------------------------------------------------------ */
@@ -55,15 +57,14 @@ export default async function AuthGuard({
 
     if (!profile) {
       // No row in `public.profiles` yet → maybe just signed up.
-      // You can either:
-      //   A. Redirect to a "complete profile" page
-      //   B. Insert a default row here (not shown)
       redirect('/auth/login') // fallback: treat as not authorized
     }
 
+    console.log("Profile data:", profile);
+
     if (profile.role !== role) {
       // User is signed in but with the wrong role → send them away.
-      redirect('/') // or '/forbidden'
+      redirect('/forbidden')
     }
   }
 
